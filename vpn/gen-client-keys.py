@@ -11,8 +11,16 @@ import logging
 app = FastAPI()
 logger = logging.getLogger("app")
 
+
 def run(cmd, noerr=False, stdin=False, wait=True):
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, preexec_fn=os.setsid)
+    p = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE,
+        preexec_fn=os.setsid,
+    )
     stdout, stderr = b"", b""
     if stdin:
         stdout, stderr = p.communicate(input=bytes(stdin, "utf-8"))
@@ -29,7 +37,8 @@ def run(cmd, noerr=False, stdin=False, wait=True):
 
     return stdout
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+
+r = redis.Redis(host="localhost", port=6379, db=0)
 
 SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
@@ -42,6 +51,7 @@ except FileExistsError:
     pass
 
 SERV_PRIVATE_KEY, SERV_PUBLIC_KEY = "", ""
+
 
 def init_srv_keys():
     global SERV_PRIVATE_KEY, SERV_PUBLIC_KEY
@@ -67,14 +77,16 @@ def init_srv_keys():
         os.unlink(SRV_PUB_KEY_PATH)
         init_srv_keys()
 
+
 init_srv_keys()
 
-wg_config_tmpl = ("""
+wg_config_tmpl = (
+    """
 [Interface]
 Address = 10.0.0.1/16
 ListenPort = 51194
 """
-f"PrivateKey = {SERV_PRIVATE_KEY}"
+    f"PrivateKey = {SERV_PRIVATE_KEY}"
 )
 
 wg_config_peer_block = """
@@ -107,37 +119,53 @@ else:
     ips = r.hgetall("ips")
     for public_key, private_key in keys.items():
         ip = ips[public_key]
-        WG_CONFIG_FILE += wg_config_peer_block.format(public_key.decode("utf-8"), ip.decode("utf-8"))
-        
+        print(f"'{ip}:9100',", end="")
+        WG_CONFIG_FILE += wg_config_peer_block.format(
+            public_key.decode("utf-8"), ip.decode("utf-8")
+        )
+
 with open("/opt/lafayette/server.conf", "w") as f:
     print(WG_CONFIG_FILE)
     f.write(WG_CONFIG_FILE)
 
 
-    
-WG_CLIENT_CONFIG_TMPL = ("""
+WG_CLIENT_CONFIG_TMPL = (
+    """
 [Interface]
 PrivateKey = {}
 Address = {}/16
  
 [Peer]
 """
-f"PublicKey = {SERV_PUBLIC_KEY}"
-"""
+    f"PublicKey = {SERV_PUBLIC_KEY}"
+    """
 AllowedIPs = 10.0.0.1/32
 """
-f"Endpoint = {SERV_PUBLIC_IP}:51194")
+    f"Endpoint = {SERV_PUBLIC_IP}:51194"
+)
+
+
+@app.get("/prom-targets")
+async def prom_targets():
+    ips = r.hgetall("ips").values()
+    tgts = [f"{ip.decode('utf-8')}:9100" for ip in ips]
+    return [{"targets": tgts, "labels": {"type": "lafayette"}}]
 
 
 @app.get("/keys")
-async def keys(token = Header(None)):
+async def keys(token=Header(None)):
     if token != PSK:
         return JSONResponse(status_code=403)
     public_key, private_key = next(r.hscan_iter("wg-keys"))
     deletion = r.hdel("wg-keys", public_key)
     save = r.lpush("used-wg-pub-keys", public_key)
-    #print(save)
+    # print(save)
     ip = r.hget("ips", public_key)
-    #print(deletion, k, ip)
-    return Response(content=WG_CLIENT_CONFIG_TMPL.format(private_key.decode("utf-8"), ip.decode("utf-8")), media_type="application/text")
+    # print(deletion, k, ip)
+    return Response(
+        content=WG_CLIENT_CONFIG_TMPL.format(
+            private_key.decode("utf-8"), ip.decode("utf-8")
+        ),
+        media_type="application/text",
+    )
     return {"key.pub": k[0], "key.priv": k[1], "server.pub": SERV_PUBLIC_KEY, "ip": ip}
