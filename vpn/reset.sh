@@ -1,0 +1,1 @@
+docker stop redis && docker rm redis && rm -rf /opt/lafayette/redis-data && rm /opt/lafayette/server.conf
