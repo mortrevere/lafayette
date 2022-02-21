@@ -103,9 +103,14 @@ if r.hlen("wg-keys") == 0:
             last_byte = 0
         WG_CONFIG_FILE += wg_config_peer_block.format(public_key, ip)
 else:
-    pass
+    keys = r.hgetall("wg-keys")
+    ips = r.hgetall("ips")
+    for public_key, private_key in keys.items():
+        ip = ips[public_key]
+        WG_CONFIG_FILE += wg_config_peer_block.format(public_key, ip)
         
 with open("/opt/lafayette/server.conf", "w") as f:
+    print(WG_CONFIG_FILE)
     f.write(WG_CONFIG_FILE)
 
 
