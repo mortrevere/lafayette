@@ -44,6 +44,7 @@ SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
 SERV_PUBLIC_IP = "164.132.48.50"
 PSK = "jUkqQsMYeFADK1s1O8gb3BMjF"
+ADMIN_PSK = "test"
 
 try:
     os.mkdir("/opt/lafayette")
@@ -144,6 +145,21 @@ AllowedIPs = 10.0.0.1/32
     f"Endpoint = {SERV_PUBLIC_IP}:51194"
 )
 
+WG_ADMIN_CONFIG_TMPL = (
+    """
+[Interface]
+PrivateKey = {}
+Address = {}/16
+ 
+[Peer]
+"""
+    f"PublicKey = {SERV_PUBLIC_KEY}"
+    """
+AllowedIPs = 10.0.0.0/24
+"""
+    f"Endpoint = {SERV_PUBLIC_IP}:51194"
+)
+
 
 @app.get("/prom-targets")
 async def prom_targets():
@@ -152,6 +168,24 @@ async def prom_targets():
     return [{"targets": tgts, "labels": {"type": "lafayette"}}]
 
 
+@app.get("/admin-keys")
+async def keys(token=Header(None)):
+    if token != ADMIN_PSK:
+        return JSONResponse(status_code=403)
+    public_key, private_key = next(r.hscan_iter("wg-keys"))
+    deletion = r.hdel("wg-keys", public_key)
+    save = r.lpush("used-wg-pub-keys", public_key)
+    save = r.lpush("used-admin-pub-keys", public_key)
+    # print(save)
+    ip = r.hget("ips", public_key)
+    # print(deletion, k, ip)
+    return Response(
+        content=WG_ADMIN_CONFIG_TMPL.format(
+            private_key.decode("utf-8"), ip.decode("utf-8")
+        ),
+        media_type="application/text",
+    )
+    
 @app.get("/keys")
 async def keys(token=Header(None)):
     if token != PSK:
@@ -168,4 +202,3 @@ async def keys(token=Header(None)):
         ),
         media_type="application/text",
     )
-    return {"key.pub": k[0], "key.priv": k[1], "server.pub": SERV_PUBLIC_KEY, "ip": ip}
