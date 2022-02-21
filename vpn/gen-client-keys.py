@@ -33,7 +33,7 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 
 SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
-SERV_PUBLIC_IP = "7.78.65.30"
+SERV_PUBLIC_IP = "164.132.48.50"
 PSK = "jUkqQsMYeFADK1s1O8gb3BMjF"
 
 try:
