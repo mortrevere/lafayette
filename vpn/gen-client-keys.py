@@ -93,7 +93,7 @@ ListenPort = 51194
 wg_config_peer_block = """
 [Peer]
 PublicKey = {}
-AllowedIPs = {}/32
+AllowedIPs = {}/32,{}/32
 """
 
 WG_CONFIG_FILE = wg_config_tmpl
@@ -114,7 +114,7 @@ if r.hlen("wg-keys") == 0:
         if last_byte == 253:
             pen_byte += 1
             last_byte = 0
-        WG_CONFIG_FILE += wg_config_peer_block.format(public_key, ip)
+        WG_CONFIG_FILE += wg_config_peer_block.format(public_key, ip, ip.replace("10.0.", "10.10."))
 else:
     keys = r.hgetall("wg-keys")
     ips = r.hgetall("ips")
@@ -177,8 +177,8 @@ async def keys(token=Header(None)):
     save = r.lpush("used-wg-pub-keys", public_key)
     save = r.lpush("used-admin-pub-keys", public_key)
     # print(save)
-    ip = r.hget("ips", public_key).decode("utf-8")
-    r.hset("ips", public_key, ip.replace("10.0.", "10.10."))
+    ip = r.hget("ips", public_key).decode("utf-8").replace("10.0.", "10.10.")
+    r.hset("ips", public_key, ip)
     # print(deletion, k, ip)
     return Response(
         content=WG_ADMIN_CONFIG_TMPL.format(
