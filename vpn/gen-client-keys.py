@@ -119,10 +119,10 @@ else:
     keys = r.hgetall("wg-keys")
     ips = r.hgetall("ips")
     for public_key, private_key in keys.items():
-        ip = ips[public_key]
-        print(f"'{ip}:9100',", end="")
+        ip = ips[public_key].decode("utf-8")
+        #print(f"'{ip}:9100',", end="")
         WG_CONFIG_FILE += wg_config_peer_block.format(
-            public_key.decode("utf-8"), ip.decode("utf-8")
+            public_key.decode("utf-8"), ip, ip.replace("10.0.", "10.10.")
         )
 
 with open("/opt/lafayette/server.conf", "w") as f:
