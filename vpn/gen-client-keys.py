@@ -139,6 +139,7 @@ PrivateKey = {}
 Address = {}/16
  
 [Peer]
+PersistentKeepalive = 25
 """
     f"PublicKey = {SERV_PUBLIC_KEY}"
     """
@@ -154,6 +155,7 @@ PrivateKey = {}
 Address = {}/16
  
 [Peer]
+PersistentKeepalive = 25
 """
     f"PublicKey = {SERV_PUBLIC_KEY}"
     """
