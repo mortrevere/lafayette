@@ -164,9 +164,13 @@ AllowedIPs = 10.0.0.0/16
 
 __used_client_slots = Gauge('lafayette_used_client_slots', 'Number of client slots used', ['ip'])
 __used_admin_slots = Gauge('lafayette_used_admin_slots', 'Number of client slots used', ['ip'])
-for public_key, ip in r.hscan_iter("ips"):
-    __used_client_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-wg-pub-keys"))
-    __used_admin_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-admin-pub-keys"))
+for public_key in r.lrange("used-wg-pub-keys", 0, -1):
+    ip = r.hget("ips", public_key).decode("utf-8")
+    __used_client_slots.labels(ip=ip).set(1) #r.llen("used-wg-pub-keys"))
+
+for public_key in r.lrange("used-admin-pub-keys", 0, -1):
+    ip = r.hget("ips", public_key).decode("utf-8")
+    __used_admin_slots.labels(ip=ip).set(1) #r.llen("used-admin-pub-keys"))
 start_http_server(1337)
 
 
@@ -184,7 +188,6 @@ async def keys(token=Header(None)):
         return JSONResponse(status_code=403)
     public_key, private_key = next(r.hscan_iter("wg-keys"))
     deletion = r.hdel("wg-keys", public_key)
-    save = r.lpush("used-wg-pub-keys", public_key)
     save = r.lpush("used-admin-pub-keys", public_key)
     # print(save)
     ip = r.hget("ips", public_key).decode("utf-8").replace("10.0.", "10.10.")
