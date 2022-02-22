@@ -31,3 +31,12 @@ EOF
 sudo systemctl daemon-reload 
 sudo systemctl enable node_exporter.service
 sudo systemctl start node_exporter.service
+
+ssh-keygen -A
+update-rc.d ssh enable
+invoke-rc.d ssh start
+
+
+apt-get install realvnc-vnc-server
+systemctl enable vncserver-x11-serviced.service
+systemctl start vncserver-x11-serviced.service
