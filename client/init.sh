@@ -1,3 +1,9 @@
+while ! ping -c 1 -W 1 8.8.8.8; do
+    echo "En attente d'une connexion internet ..."
+    sleep 1
+done
+
+
 apt update -y
 wg-quick down lafayette
 apt install -y wireguard dkms raspberrypi-kernel-headers wireguard-dkms wireguard-tools
