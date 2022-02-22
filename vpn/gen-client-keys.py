@@ -148,7 +148,7 @@ PersistentKeepalive = 25
 """
     f"PublicKey = {SERV_PUBLIC_KEY}"
     """
-AllowedIPs = 10.0.0.1/32,10.10.0.0/24
+AllowedIPs = 10.0.0.1/32,10.10.0.0/16
 """
     f"Endpoint = {SERV_PUBLIC_IP}:51194"
 )
