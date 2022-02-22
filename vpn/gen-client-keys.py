@@ -189,7 +189,7 @@ async def prom_targets():
     return [{"targets": tgts, "labels": {"type": "lafayette"}}]
 
 
-@app.get("/admin-keys")
+@app.get("/api/admin-keys")
 async def keys(token=Header(None)):
     if token != ADMIN_PSK:
         return JSONResponse(status_code=403)
@@ -208,7 +208,7 @@ async def keys(token=Header(None)):
         media_type="application/text",
     )
     
-@app.get("/keys")
+@app.get("/api/keys")
 async def keys(token=Header(None)):
     if token != PSK:
         return JSONResponse(status_code=403)
