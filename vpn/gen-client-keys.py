@@ -140,7 +140,7 @@ Address = {}/16
 """
     f"PublicKey = {SERV_PUBLIC_KEY}"
     """
-AllowedIPs = 10.0.0.1/32
+AllowedIPs = 10.0.0.1/32,10.10.0.0/24
 """
     f"Endpoint = {SERV_PUBLIC_IP}:51194"
 )
@@ -155,7 +155,7 @@ Address = {}/16
 """
     f"PublicKey = {SERV_PUBLIC_KEY}"
     """
-AllowedIPs = 10.0.0.0/24
+AllowedIPs = 10.0.0.0/16
 """
     f"Endpoint = {SERV_PUBLIC_IP}:51194"
 )
@@ -177,11 +177,12 @@ async def keys(token=Header(None)):
     save = r.lpush("used-wg-pub-keys", public_key)
     save = r.lpush("used-admin-pub-keys", public_key)
     # print(save)
-    ip = r.hget("ips", public_key)
+    ip = r.hget("ips", public_key).decode("utf-8")
+    r.hset("ips", public_key, ip.replace("10.0.", "10.10."))
     # print(deletion, k, ip)
     return Response(
         content=WG_ADMIN_CONFIG_TMPL.format(
-            private_key.decode("utf-8"), ip.decode("utf-8")
+            private_key.decode("utf-8"), ip
         ),
         media_type="application/text",
     )
