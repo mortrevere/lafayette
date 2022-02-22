@@ -110,7 +110,7 @@ print(wg_config_tmpl)
 if r.hlen("wg-keys") == 0:
     last_byte = 1
     pen_byte = 0
-    for i in range(100):
+    for i in range(1000):
         last_byte += 1
         private_key = run("wg genkey").strip()
         public_key = run("wg pubkey", stdin=private_key).strip()
