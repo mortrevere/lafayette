@@ -164,7 +164,7 @@ AllowedIPs = 10.0.0.0/16
 @app.get("/prom-targets")
 async def prom_targets():
     ips = r.hgetall("ips").values()
-    tgts = [f"{ip.decode('utf-8')}:9100" for ip in ips if ip.startswith("10.0.")]
+    tgts = [f"{ip.decode('utf-8')}:9100" for ip in ips if ip.startswith(b"10.0.")]
     return [{"targets": tgts, "labels": {"type": "lafayette"}}]
 
 
