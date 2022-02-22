@@ -163,7 +163,7 @@ AllowedIPs = 10.0.0.0/16
 )
 
 __used_client_slots = Gauge('lafayette_used_client_slots', 'Number of client slots used', ['ip'])
-__used_admin_slots = Gauge('lafayette_used_client_slots', 'Number of client slots used', ['ip'])
+__used_admin_slots = Gauge('lafayette_used_admin_slots', 'Number of client slots used', ['ip'])
 for public_key, ip in r.hscan_iter("ips"):
     __used_client_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-wg-pub-keys"))
     __used_admin_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-admin-pub-keys"))
