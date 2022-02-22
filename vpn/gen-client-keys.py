@@ -7,6 +7,8 @@ from fastapi import FastAPI, Request, HTTPException, Header, Response
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import logging
+from prometheus_client import start_http_server, Gauge
+
 
 app = FastAPI()
 logger = logging.getLogger("app")
@@ -160,6 +162,14 @@ AllowedIPs = 10.0.0.0/16
     f"Endpoint = {SERV_PUBLIC_IP}:51194"
 )
 
+__used_client_slots = Gauge('lafayette_used_client_slots', 'Number of client slots used', ['ip'])
+__used_admin_slots = Gauge('lafayette_used_client_slots', 'Number of client slots used', ['ip'])
+for public_key, ip in r.hscan_iter("ips"):
+    __used_client_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-wg-pub-keys"))
+    __used_admin_slots.labels(ip=ip.decode("utf-8")).set(1) #r.llen("used-admin-pub-keys"))
+start_http_server(1337)
+
+
 
 @app.get("/prom-targets")
 async def prom_targets():
@@ -180,6 +190,7 @@ async def keys(token=Header(None)):
     ip = r.hget("ips", public_key).decode("utf-8").replace("10.0.", "10.10.")
     r.hset("ips", public_key, ip)
     # print(deletion, k, ip)
+    __used_admin_slots.labels(ip=ip).inc()
     return Response(
         content=WG_ADMIN_CONFIG_TMPL.format(
             private_key.decode("utf-8"), ip
@@ -196,6 +207,7 @@ async def keys(token=Header(None)):
     save = r.lpush("used-wg-pub-keys", public_key)
     # print(save)
     ip = r.hget("ips", public_key)
+    __used_client_slots.labels(ip=ip).inc()
     # print(deletion, k, ip)
     return Response(
         content=WG_CLIENT_CONFIG_TMPL.format(
