@@ -1,4 +1,4 @@
-docker run --rm --network host --env-file $(pwd)/grafana.env \
+docker run --rm -d --network host --env-file $(pwd)/grafana.env \
        -v $(pwd)/grafana-prom-datasource.yaml:/etc/grafana/provisioning/datasources/prometheus.yml \
        -v $(pwd)/grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/grafana-dashboard.yml \
        -v $(pwd)/dashboard.json:/var/lib/grafana/dashboards/dashboard.json \

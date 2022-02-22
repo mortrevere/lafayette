@@ -1,1 +1,1 @@
-docker run --network host --name nginx -v /etc/letsencrypt:/etc/letsencrypt -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf nginx:latest
+docker run --rm -d --network host --name nginx -v /etc/letsencrypt:/etc/letsencrypt -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf nginx:latest
