@@ -8,7 +8,7 @@ done
 apt update -y
 wg-quick down lafayette
 apt install -y wireguard dkms raspberrypi-kernel-headers wireguard-dkms wireguard-tools
-ls /etc/wireguard/lafayette.conf || curl -H "Token: XXXXXXXXX" http://164.132.48.50:8000/keys > /etc/wireguard/lafayette.conf
+ls /etc/wireguard/lafayette.conf || curl -H "Token: XXXXXXXXX" https://lafayette.ojive.fun/api/keys > /etc/wireguard/lafayette.conf
 chmod 777 /etc/wireguard/lafayette.conf
 wg-quick up lafayette
 
