@@ -1,12 +1,12 @@
 import os
-from urllib import request
+from urllib import request, response
 import redis
 import subprocess
 
 
 from fastapi import FastAPI, Request, HTTPException, Header, Response
 from pydantic import BaseModel
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 import logging
 from prometheus_client import start_http_server, Gauge
 import requests
@@ -181,9 +181,7 @@ for public_key in r.lrange("used-admin-pub-keys", 0, -1):
     __used_admin_slots.labels(ip=ip).set(1) #r.llen("used-admin-pub-keys"))
 start_http_server(1337)
 
-
-@app.get("/client-list")
-async def client_list():
+def get_connected_clients():
     out = []
 
     r = requests.get("http://localhost/prometheus/api/v1/query?query=up%7Bjob%3D%22lafayette%22%7D%3D%3D1")
@@ -193,8 +191,22 @@ async def client_list():
     for c in clients_up:
         ip = c.get("metric", {}).get("instance", "").split(":")[0]
         out += [ip]
+    return out
+
+@app.get("/screens", response_class=HTMLResponse) 
+async def screens():
+    tmpl = "<html><head></head><body>"
+    ips = get_connected_clients()
+    for ip in ips:
+        tmpl += f"<div><p>{ip}</p><img src='https://lafayette.ojive.fun/screen/{ip}.png'/></div>"
+    tmpl += "</body></html>"
+    return tmpl
+
+    
+@app.get("/client-list")
+async def client_list():
     return Response(
-        content="\n".join(out) + "\n",
+        content="\n".join(get_connected_clients()) + "\n",
         media_type="application/text",
     )
     
