@@ -182,6 +182,22 @@ start_http_server(1337)
 
 
 
+@app.get("/client-list")
+async def client_list():
+    out = []
+    wg_out = f.read().split('\n\n')
+    for block in wg_out:
+        lines = [l.strip() for l in block.split("\n")]
+        block_type = lines[0].split(" ")[0][0:-1]
+        if block_type == "peer":
+            pub_key = lines[0].split(" ")[1]
+            if lines[1].split(" ")[0][0:-1] == "endpoint":
+                if r.lpos("used-wg-pub-keys", pub_key):
+                    ip = r.hget("ips", public_key).decode("utf-8")
+                    out += [ip]
+                    print(lines[1], pub_key)
+    return out
+
 @app.get("/prom-targets")
 async def prom_targets():
     ips = r.hgetall("ips").values()
