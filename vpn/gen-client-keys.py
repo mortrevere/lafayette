@@ -193,7 +193,10 @@ async def client_list():
     for c in clients_up:
         ip = c.get("metric", {}).get("instance", "").split(":")[0]
         out += [ip]
-    return out
+    return Response(
+        content="\n".join(out),
+        media_type="application/text",
+    )
     
     wg_out = run("wg").split('\n\n')
     for block in wg_out:
