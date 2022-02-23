@@ -194,7 +194,7 @@ async def client_list():
         ip = c.get("metric", {}).get("instance", "").split(":")[0]
         out += [ip]
     return Response(
-        content="\n".join(out),
+        content="\n".join(out) + "\n",
         media_type="application/text",
     )
     
