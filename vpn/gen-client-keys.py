@@ -196,13 +196,12 @@ def get_connected_clients():
 @app.get("/api/screens", response_class=HTMLResponse) 
 async def screens(css = None):
     if css:
-
-        return """
-        div {
-            width: 20%;
-            display: inline-block;
-        }
-        """
+        with open("./screenshots/css.css") as f:
+            css = f.read()
+            return Response(
+                content=css,
+                media_type="text/css",
+            )
     
     tmpl = '<html><head><link rel="stylesheet" type="text/css" href="https://lafayette.ojive.fun/api/screens?css"></head><body>'
     ips = get_connected_clients()
