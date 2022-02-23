@@ -1,5 +1,8 @@
 div {
-    width: 20%;
+    width: 8%;
+    display: inline-block;
+    height: 180px;
+    overflow: hidden;
 }
 
 div img {
@@ -7,5 +10,5 @@ div img {
 }
 
 div p {
-    
+
 }
