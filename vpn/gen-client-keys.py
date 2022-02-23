@@ -185,7 +185,7 @@ start_http_server(1337)
 @app.get("/client-list")
 async def client_list():
     out = []
-    wg_out = f.read().split('\n\n')
+    wg_out = run("wg").split('\n\n')
     for block in wg_out:
         lines = [l.strip() for l in block.split("\n")]
         block_type = lines[0].split(" ")[0][0:-1]
