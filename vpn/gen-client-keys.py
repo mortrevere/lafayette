@@ -203,7 +203,7 @@ async def screens(css = None):
                 media_type="text/css",
             )
     
-    tmpl = '<html><head><link rel="stylesheet" type="text/css" href="https://lafayette.ojive.fun/api/screens?css=1"></head><body>'
+    tmpl = '<html><head><meta http-equiv="refresh" content="60" ><link rel="stylesheet" type="text/css" href="https://lafayette.ojive.fun/api/screens?css=1"></head><body>'
     ips = get_connected_clients()
     for ip in ips:
         tmpl += f"<div><p>{ip}</p><img src='https://lafayette.ojive.fun/screen/{ip}.png'/></div>"
