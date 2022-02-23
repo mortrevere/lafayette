@@ -193,7 +193,7 @@ def get_connected_clients():
         out += [ip]
     return out
 
-@app.get("/api/screens", response_class=HTMLResponse) 
+@app.get("/api/screens") 
 async def screens(css = None):
     if css:
         with open("./screenshots/css.css") as f:
@@ -208,7 +208,10 @@ async def screens(css = None):
     for ip in ips:
         tmpl += f"<div><p>{ip}</p><img src='https://lafayette.ojive.fun/screen/{ip}.png'/></div>"
     tmpl += "</body></html>"
-    return tmpl
+    return Response(
+                content=tmpl,
+                media_type="text/html",
+            )
 
     
 @app.get("/client-list")
