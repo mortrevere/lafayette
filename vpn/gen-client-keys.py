@@ -1,4 +1,5 @@
 import os
+from urllib import request
 import redis
 import subprocess
 
@@ -8,7 +9,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import logging
 from prometheus_client import start_http_server, Gauge
-
+import requests
 
 app = FastAPI()
 logger = logging.getLogger("app")
@@ -181,10 +182,19 @@ for public_key in r.lrange("used-admin-pub-keys", 0, -1):
 start_http_server(1337)
 
 
-
 @app.get("/client-list")
 async def client_list():
     out = []
+
+    r = requests.get("http://localhost/prometheus/api/v1/query?query=up%7Bjob%3D%22lafayette%22%7D%3D%3D1")
+    clients_up = r.json().get("data",{}).get("result", [])
+    print(clients_up)
+
+    for c in clients_up:
+        ip = c.get("metric", {}).get("instance", "").split(":")[0]
+        out += [ip]
+    return out
+    
     wg_out = run("wg").split('\n\n')
     for block in wg_out:
         lines = [l.strip() for l in block.split("\n")]
