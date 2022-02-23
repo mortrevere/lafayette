@@ -193,7 +193,7 @@ async def client_list():
             pub_key = lines[0].split(" ")[1]
             if lines[1].split(" ")[0][0:-1] == "endpoint":
                 if r.lpos("used-wg-pub-keys", pub_key):
-                    ip = r.hget("ips", public_key).decode("utf-8")
+                    ip = r.hget("ips", pub_key).decode("utf-8")
                     out += [ip]
                     print(lines[1], pub_key)
     return out
