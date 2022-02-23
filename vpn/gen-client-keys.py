@@ -193,7 +193,7 @@ def get_connected_clients():
         out += [ip]
     return out
 
-@app.get("/screens", response_class=HTMLResponse) 
+@app.get("/api/screens", response_class=HTMLResponse) 
 async def screens():
     tmpl = "<html><head></head><body>"
     ips = get_connected_clients()
