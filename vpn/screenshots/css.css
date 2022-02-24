@@ -1,3 +1,8 @@
+html, body {
+    background-color: #000;
+    color: #FFF;
+    font-family: sans-serif;
+}
 div {
     width: 8%;
     display: inline-block;
@@ -10,5 +15,5 @@ div img {
 }
 
 div p {
-
+    text-align: center;
 }
