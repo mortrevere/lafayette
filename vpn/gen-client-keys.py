@@ -42,7 +42,7 @@ def run(cmd, noerr=False, stdin=False, wait=True):
 
 REDIS_PW = ""
 with open("/opt/lafayette/redis.pw") as f:
-    REDIS_PW = f.read()
+    REDIS_PW = f.read().strip()
 
 r = redis.Redis(host="localhost", port=6379, db=0, password=REDIS_PW)
 
