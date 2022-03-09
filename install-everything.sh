@@ -1,3 +1,9 @@
+if [[ $(/usr/bin/id -u) -ne 0 ]]; then
+    echo "This script MUST be run as root ! Type 'sudo su' and try again ?"
+    exit
+fi
+
+
 set -ex
 
 echo "Installing packages ..."
