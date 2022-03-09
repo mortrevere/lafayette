@@ -96,6 +96,11 @@ wg-quick up lafayette
 wg
 echo "wireguard should be up."
 
+echo "Setting up firewall & routing ..."
+iptables -A FORWARD -i lafayette -o lafayette -j ACCEPT
+sysctl -w net.ipv4.ip_forward=1
+echo "done"
+
 set +x
 echo "Running final checks ..."
 docker ps -q | wc -l | grep -q 5
