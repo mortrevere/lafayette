@@ -34,6 +34,10 @@ chmod +x run-*.sh
 set +e 
 docker stop prometheus
 docker rm prometheus
+docker stop grafana
+docker rm grafana
+docker stop nginx
+docker rm nginx
 set -e
 ./run-prometheus.sh
 ./run-grafana.sh
