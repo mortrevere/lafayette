@@ -28,6 +28,11 @@ ls /opt/lafayette/client.psk || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | 
 ls /opt/lafayette/redis.pw || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/redis.pw)
 echo "done creating passwords"
 
+echo "Getting my own public IP address ..."
+curl ipinfo.io/ip > /opt/lafayette/myip
+echo -n "my ip is : "
+cat /opt/lafayette/myip
+echo
 
 echo "Starting web server & monitoring services (grafana/prometheus) ..."
 chmod +x run-*.sh
@@ -84,6 +89,9 @@ docker ps
 docker logs lafayette-api
 
 echo "Starting up wireguard ..."
+set +e
+wg-quick down lafayette
+set -e
 wg-quick up lafayette
 wg
 echo "wireguard should be up."
@@ -107,4 +115,16 @@ echo "nginx is working well and prometheus is scraping the Lafayette API"
 
 
 echo "Lafayette is up and running !"
+
+
+echo "Here are the passwords :"
+echo
+echo -n "Client password (for Raspberry Pi) : "
+cat /opt/lafayette/client.psk
+echo 
+echo -n "Admin password (for you) : "
+cat /opt/lafayette/admin.psk
+echo 
+echo -n "Grafana password : "
+cat /opt/lafayette/grafana.pw
 

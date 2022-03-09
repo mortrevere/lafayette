@@ -48,7 +48,9 @@ r = redis.Redis(host="localhost", port=6379, db=0, password=REDIS_PW)
 
 SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
-SERV_PUBLIC_IP = "164.132.48.50"
+SERV_PUBLIC_IP = ""
+with open("/opt/lafayette/myip") as f:
+    SERV_PUBLIC_IP = f.read.strip()
 
 with open("/opt/lafayette/client.psk") as f:
     PSK = f.read().strip()
