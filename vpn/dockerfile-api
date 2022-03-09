@@ -7,5 +7,5 @@ COPY run-api.sh /tmp/run-api.sh
 RUN chmod +x /tmp/run-api.sh
 RUN pip install -r /tmp/requirements.txt
 
-ENTRYPOINT bash
-CMD ["-c", "cd /tmp && /tmp/run-api.sh"]
+WORKDIR /tmp/
+CMD ["uvicorn", "gen-client-keys:app", "--log-level", "debug", "--host", "0.0.0.0"]
