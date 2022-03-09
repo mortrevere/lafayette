@@ -47,8 +47,15 @@ echo "done starting external first services"
 echo "Starting Redis ..."
 cd vpn
 chmod +x *.sh
-echo "\nrequirepass ">> redis.conf 
-cat /opt/lafayette/redis.pw | tee -a redis.conf
+cp ./redis.conf /opt/lafayette/redis.conf
+echo >> /opt/lafayette/redis.conf
+echo -n "requirepass " >> /opt/lafayette/redis.conf
+cat /opt/lafayette/redis.pw | tee -a /opt/lafayette/redis.conf
+set +e 
+docker stop redis
+docker rm redis
+set -e
 ./run-redis.sh
+echo "done with redis"
 
 
