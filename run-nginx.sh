@@ -1,1 +1,1 @@
-docker run --rm -d --network host --name nginx -v /tmp/lafayette-screenshots:/tmp/lafayette-screenshots -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf nginx:latest
+docker run --rm -d --network host --name nginx -v /tmp/lafayette-screenshots:/tmp/lafayette-screenshots -v $(pwd)/nginx.conf:/etc/nginx/nginx.conf nginx:1.21.6

@@ -24,6 +24,7 @@ mkdir /opt/lafayette
 dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/grafana.pw
 dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/admin.psk
 dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/client.psk
+dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/redis.pw
 echo "done creating passwords"
 
 echo "Starting web server & monitoring services (grafana/prometheus) ..."
@@ -32,5 +33,12 @@ chmod +x *.sh
 ./run-grafana.sh
 ./run-nginx.sh
 echo "done starting external first services"
+
+echo "Starting Redis ..."
+cd vpn
+chmod +x *.sh
+echo "\nrequirepass ">> redis.conf 
+cat /opt/lafayette/redis.pw | tee -a redis.conf
+./run-redis.sh
 
 
