@@ -15,7 +15,7 @@ echo \
 
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-sudo apt-get install -y wireguard certbot sshpass
+sudo apt-get install -y wireguard certbot sshpass netcat
 
 echo "done installing packages."
 
@@ -74,5 +74,25 @@ docker logs lafayette-api
 echo "Starting up wireguard ..."
 wg-quick up lafayette
 wg
-echo "wireguard up."
+echo "wireguard should be up."
+
+set +x
+echo "Running final checks ..."
+docker ps -q | wc -l | grep -q 5
+echo "5 docker containers are running"
+ping -c 2 10.0.0.1
+echo "wireguard seems up"
+curl --fail localhost:3000
+echo "grafana seems up"
+curl --fail localhost:9090
+echo "prometheus seems up"
+nc -vz localhost 6379
+echo "redis seems up"
+curl --fail localhost:80/api/screens
+echo "Lafayette API seems up"
+curl --fail http://localhost/prometheus/api/v1/query?query=up%7Bjob%3D%22lafayette-master%22%7D%3D%3D1 | grep -q localhost:1337
+echo "nginx is working well and prometheus is scraping the Lafayette API"
+
+
+echo "Lafayette is up and running !"
 
