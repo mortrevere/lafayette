@@ -31,7 +31,12 @@ echo "done creating passwords"
 
 echo "Starting web server & monitoring services (grafana/prometheus) ..."
 chmod +x *.sh
-./restart-all.sh
+set +e 
+docker rm prometheus
+set -e
+./run-prometheus.sh
+./run-grafana.sh
+./run-nginx.sh
 echo "done starting external first services"
 
 echo "Starting Redis ..."
