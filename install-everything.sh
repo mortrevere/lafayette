@@ -64,6 +64,6 @@ docker ps
 
 echo "Building Lafayette API ..."
 docker build . -f dockerfile-api -t lafayette-api
-./run-api.sh
+./run-api-docker.sh
 
 
