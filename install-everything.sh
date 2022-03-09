@@ -20,11 +20,12 @@ sudo apt-get install -y wireguard certbot sshpass
 echo "done installing packages."
 
 echo "Creating passwords ..."
-mkdir /opt/lafayette
-dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/grafana.pw
-dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/admin.psk
-dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/client.psk
-dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/redis.pw
+ls /opt/lafayette || mkdir /opt/lafayette
+
+ls /opt/lafayette/grafana.pw || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/grafana.pw)
+ls /opt/lafayette/admin.psk || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/admin.psk)
+ls /opt/lafayette/client.psk || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/client.psk)
+ls /opt/lafayette/redis.pw || (dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev > /opt/lafayette/redis.pw)
 echo "done creating passwords"
 
 echo "Starting web server & monitoring services (grafana/prometheus) ..."
