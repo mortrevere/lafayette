@@ -50,7 +50,7 @@ SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
 SERV_PUBLIC_IP = ""
 with open("/opt/lafayette/myip") as f:
-    SERV_PUBLIC_IP = f.read.strip()
+    SERV_PUBLIC_IP = f.read().strip()
 
 with open("/opt/lafayette/client.psk") as f:
     PSK = f.read().strip()
