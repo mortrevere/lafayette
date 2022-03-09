@@ -30,7 +30,7 @@ echo "done creating passwords"
 
 
 echo "Starting web server & monitoring services (grafana/prometheus) ..."
-chmod +x *.sh
+chmod +x run-*.sh
 set +e 
 docker stop prometheus
 docker rm prometheus
