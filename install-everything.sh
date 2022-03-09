@@ -65,6 +65,7 @@ docker ps
 echo "Building Lafayette API ..."
 docker build . -f dockerfile-api -t lafayette-api
 ./run-api-docker.sh
+sleep 15
 ls /etc/wireguard/lafayette.conf || ln -s /opt/lafayette/server.conf /etc/wireguard/lafayette.conf
 echo "done running Lafayette API"
 
