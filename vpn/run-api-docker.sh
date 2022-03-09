@@ -1,1 +1,1 @@
-docker run --rm -d --network host -v /opt/lafayette:/opt/lafayette lafayette-api
+docker run --rm -d --network host -v $(which wg):/usr/bin/wg -v /opt/lafayette:/opt/lafayette lafayette-api

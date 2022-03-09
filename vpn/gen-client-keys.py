@@ -40,8 +40,11 @@ def run(cmd, noerr=False, stdin=False, wait=True):
 
     return stdout
 
+REDIS_PW = ""
+with open("/opt/lafayette/redis.pw") as f:
+    REDIS_PW = f.read()
 
-r = redis.Redis(host="localhost", port=6379, db=0)
+r = redis.Redis(host="localhost", port=6379, db=0, password=REDIS_PW)
 
 SRV_PRIV_KEY_PATH = "/opt/lafayette/private.key"
 SRV_PUB_KEY_PATH = "/opt/lafayette/public.key"
