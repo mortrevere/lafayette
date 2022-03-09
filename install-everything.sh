@@ -44,6 +44,8 @@ set -e
 ./run-nginx.sh
 echo "done starting external first services"
 
+docker ps
+
 echo "Starting Redis ..."
 cd vpn
 chmod +x *.sh
@@ -57,5 +59,11 @@ docker rm redis
 set -e
 ./run-redis.sh
 echo "done with redis"
+
+docker ps
+
+echo "Building Lafayette API ..."
+docker build . -f dockerfile-api -t lafayette-api
+./run-api.sh
 
 

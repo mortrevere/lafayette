@@ -1,0 +1,11 @@
+FROM python:3.9
+
+COPY gen-client-keys.py /tmp/gen-client-keys.py
+COPY requirements.txt /tmp/requirements.txt
+COPY run-api.sh /tmp/run-api.sh
+
+RUN chmod +x /tmp/run-api.sh
+RUN pip install -r /tmp/requirements.txt
+
+ENTRYPOINT bash
+CMD ["-c", "cd /tmp && /tmp/run-api.sh"]
