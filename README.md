@@ -141,9 +141,9 @@ rtt min/avg/max/mdev = 14.328/14.328/14.328/0.000 ms
 
 L'avant dernière ligne indique que tout fonctionne : `1 paquets transmis, 1 reçus, 0 % paquets perdus, temps 0 ms`
 
-## Installation des raspberry pi
+## Installation des Raspberry Pi 
 
-Sur chaque raspberry pi, éxécutez le script situé dans `client/init.sh` (en tant que root)
+Sur chaque Raspberry Pi , éxécutez le script situé dans `client/init.sh` (en tant que root)
 
 La seule ligne à modifier pour votre besoin est la suivante (ligne 11) : 
 
@@ -153,4 +153,6 @@ ls /etc/wireguard/lafayette.conf || curl -H "Token: XXXXXXXXX" https://X.X.X.X/a
 
 où le token et l'adresse IP du serveur doivent être renseignés.
 
-Ce script est idempotent, il peut être éxécuté à chaque démarrage du raspberry pi.
+Ce script est idempotent, il peut être éxécuté à chaque démarrage du Raspberry Pi. Sinon, il est de votre responsabilité de faire correctement démarrer le client wireguard au moment du boot.
+
+Une fois le premier Raspberry Pi configuré et connecté, il apparaitra dans Grafana.
